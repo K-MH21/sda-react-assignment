@@ -1,0 +1,28 @@
+.footer {
+  background-color: #000000;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.footer-company {
+  font-size: 15px;
+}
+
+.footer-links {
+  list-style-type: none;
+  display: flex;
+  gap: 20px;
+}
+
+.footer-link {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
