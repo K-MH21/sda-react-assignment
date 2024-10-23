@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import ProductItem from "../ProductItemCard/ProductItemCard";
+import ProductItemCard from "../ProductItemCard/ProductItemCard";
 import "./WishlistPage.css";
 
 const WishlistPage = () => {
   const [wishlistProducts, setWishlistProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   // const [error, setError] = useState([]);
+  const [badIds, setBadIds] = useState([]);
+
   let error = false;
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const WishlistPage = () => {
           const product = JSON.parse(textResponse);
           fetchedProducts.push(product);
         } catch (e) {
+          setBadIds([...badIds, e]); // Untested
           error = true;
         }
       }
@@ -42,7 +45,7 @@ const WishlistPage = () => {
 
       if (error) {
         error = false;
-        alert(`Error fetching product some products.`);
+        alert(`Error fetching some products.`);
       }
     };
 
@@ -75,13 +78,14 @@ const WishlistPage = () => {
       <div className="product-list">
         {wishlistProducts.map((product) => (
           <div key={product.id} className="product-item-container">
-            <ProductItem product={product} />
+            <ProductItemCard product={product} />
             <button
               className="remove-btn"
               onClick={() => removeFromWishlist(product.id)}
             >
               Remove from Wishlist
             </button>
+            {/* The above button does look ugly, it would look better if I had id inside the ProductItemCard */}
           </div>
         ))}
       </div>

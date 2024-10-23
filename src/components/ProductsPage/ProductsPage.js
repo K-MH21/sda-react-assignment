@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ProductItem from "../ProductItemCard/ProductItemCard";
+import ProductItemCard from "../ProductItemCard/ProductItemCard";
 import "./ProductsPage.css";
 
 const ProductsPage = () => {
@@ -51,7 +51,7 @@ const ProductsPage = () => {
 
       <div className="product-list">
         {filteredProducts.map((product) => (
-          <ProductItem key={product.id} product={product} />
+          <ProductItemCard key={product.id} product={product} />
         ))}
       </div>
     </div>

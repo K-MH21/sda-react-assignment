@@ -35,24 +35,20 @@ const ProductDetail = () => {
     fetchProduct();
   }, [productId]);
 
-  const toggleWishlist = () => {
+  function toggleWishlist() {
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    const productExists = wishlist.includes(Number(productId));
 
     if (isInWishlist) {
-      if (productExists) {
-        wishlist = wishlist.filter((id) => id !== Number(productId));
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-      }
+      wishlist = wishlist.filter((id) => id !== Number(productId));
+      localStorage.setItem("wishlist", JSON.stringify(wishlist));
       setIsInWishlist(false);
-    } else {
-      if (!productExists) {
-        wishlist.push(Number(productId));
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
-      }
-      setIsInWishlist(true);
+      return;
     }
-  };
+
+    wishlist.push(Number(productId));
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    setIsInWishlist(true);
+  }
 
   if (loading) return <p>Loading product details...</p>;
 
