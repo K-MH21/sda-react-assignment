@@ -7,14 +7,20 @@ const ProductsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchProducts() {
-      const response = await fetch("https://fakestoreapi.com/products");
-      const data = await response.json();
-      setProducts(data);
-      setFilteredProducts(data); // Bad name but I am bad at naming
-      setLoading(false);
+      try {
+        const response = await fetch("https://fakestoreapi.com/products");
+        const data = await response.json();
+        setProducts(data);
+        setFilteredProducts(data); // Bad name but I am bad at naming
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
     }
     fetchProducts();
   }, []);
@@ -29,6 +35,7 @@ const ProductsPage = () => {
   if (loading) {
     return <p>Loading products...</p>;
   }
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="products-page">

@@ -7,23 +7,56 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
-      const response = await fetch(
-        `https://fakestoreapi.com/products/${productId}`
-      );
-      const data = await response.json();
-      setProduct(data);
-      setLoading(false);
+      try {
+        const response = await fetch(
+          `https://fakestoreapi.com/products/${productId}`
+        );
+
+        const textResponse = await response.text();
+        if (!textResponse)
+          throw new Error("Received empty response, likely out of bound ID");
+
+        const data = JSON.parse(textResponse);
+        setProduct(data);
+        setLoading(false);
+
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        if (wishlist.includes(Number(productId))) setIsInWishlist(true);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
     }
 
     fetchProduct();
   }, [productId]);
 
-  if (loading) {
-    return <p>Loading product details...</p>;
-  }
+  const toggleWishlist = () => {
+    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const productExists = wishlist.includes(Number(productId));
+
+    if (isInWishlist) {
+      if (productExists) {
+        wishlist = wishlist.filter((id) => id !== Number(productId));
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      }
+      setIsInWishlist(false);
+    } else {
+      if (!productExists) {
+        wishlist.push(Number(productId));
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+      }
+      setIsInWishlist(true);
+    }
+  };
+
+  if (loading) return <p>Loading product details...</p>;
+
+  if (error) return <p>Error: {error}</p>;
 
   return (
     product && (
@@ -48,7 +81,9 @@ const ProductDetail = () => {
 
           <div className="product-actions">
             <button className="btn order-btn">Order</button>
-            <button className="btn wishlist-btn">Add to Wishlist</button>
+            <button className="btn wishlist-btn" onClick={toggleWishlist}>
+              {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+            </button>
           </div>
         </div>
       </div>
